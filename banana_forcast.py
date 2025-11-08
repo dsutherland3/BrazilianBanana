@@ -61,7 +61,7 @@ class ClimatePredictor:
             
             if add_variation:
                 # Add realistic year-to-year variation
-                noise = np.random.normal(0, self.scalers[col] * 0.3, len(future_years))
+                noise = np.random.normal(0, self.scalers[col] * 0.8, len(future_years))
                 predictions[col] = base_pred + noise
             else:
                 predictions[col] = base_pred
@@ -92,7 +92,7 @@ class ProductionNet(nn.Module):
     def forward(self, x):
         return self.network(x)
 
-def train_production_model(X, y, input_size, epochs=800):
+def train_production_model(X, y, input_size, epochs=1500):
     """
     Train production model with techniques suitable for small datasets
     """
@@ -214,7 +214,7 @@ def forecast_national(aggregated_df, future_years):
     y_scaled = scaler_y.fit_transform(y.reshape(-1, 1)).flatten()
     
     # Train model
-    model = train_production_model(X_scaled, y_scaled, len(feature_cols), epochs=800)
+    model = train_production_model(X_scaled, y_scaled, len(feature_cols), epochs=1500)
     
     # Phase 3: Generate production forecasts
     print("\nGenerating production forecasts from predicted climate...")
@@ -316,7 +316,7 @@ def forecast_regional(regional_df, future_years):
         X_scaled = scaler_X.fit_transform(X)
         y_scaled = scaler_y.fit_transform(y.reshape(-1, 1)).flatten()
         
-        model = train_production_model(X_scaled, y_scaled, len(feature_cols), epochs=600)
+        model = train_production_model(X_scaled, y_scaled, len(feature_cols), epochs=1500)
         
         # Generate predictions
         future_X = np.column_stack([
@@ -435,7 +435,7 @@ def main():
     """
     
     # Configuration
-    future_years = list(range(2023, 2053))
+    future_years = list(range(2023, 2043))
     
     # Load data
     regional_df, aggregated_df = load_data()
